@@ -8,9 +8,10 @@ from pgvector.psycopg import register_vector
 from app.config import settings
 
 
-def connect():
+def connect(register_types: bool = True):
     conn = psycopg.connect(settings.database_url, connect_timeout=5)
-    register_vector(conn)
+    if register_types:
+        register_vector(conn)
     return conn
 
 
@@ -18,8 +19,9 @@ def init_db():
     last_error = None
     for _ in range(30):
         try:
-            with connect() as conn:
+            with connect(register_types=False) as conn:
                 conn.execute("CREATE EXTENSION IF NOT EXISTS vector")
+                register_vector(conn)
                 conn.execute(f"""CREATE TABLE IF NOT EXISTS knowledge_chunks (
                     id text PRIMARY KEY, source_file text NOT NULL, section text NOT NULL,
                     content text NOT NULL, embedding vector({settings.cohere_embed_dim}) NOT NULL,
