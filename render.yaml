@@ -28,7 +28,7 @@ services:
       - key: WHATSAPP_API_VERSION
         sync: false
       - key: GEMINI_MODEL
-        value: gemini-3.8-flash
+        value: gemini-3.1-flash-lite
       - key: COHERE_EMBED_MODEL
         value: embed-v4.0
       - key: COHERE_EMBED_DIM

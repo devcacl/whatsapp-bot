@@ -15,7 +15,7 @@ def answer(question: str):
         return {"text": "No encuentro información suficiente en la base institucional para responder con seguridad. Te recomiendo confirmarlo con Admisiones.",
                 "sources": [], "outcome": "abstained", "category": "unclassified"}
     context = "\n\n".join(f"[Fuente {s['id']} | {s['source']} | {s['section']}]\n{s['content']}" for s in sources)
-    client = genai.Client(api_key=settings.gemini_api_key)
+    client = genai.Client(api_key=settings.gemini_api_key, http_options=types.HttpOptions(timeout=15000, retry_options=types.HttpRetryOptions(attempts=2)))
     response = client.models.generate_content(model=settings.gemini_model,
         contents=f"CONTEXTO RECUPERADO:\n{context}\n\nCONSULTA:\n{question}",
         config=types.GenerateContentConfig(system_instruction=SYSTEM_PROMPT, temperature=0.2, max_output_tokens=450))
