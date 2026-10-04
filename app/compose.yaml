@@ -1,0 +1,27 @@
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_DB: admissions
+      POSTGRES_USER: admissions
+      POSTGRES_PASSWORD: local_only_change_me
+    ports:
+      - "5432:5432"
+    volumes:
+      - admissions_db:/var/lib/postgresql/data
+  api:
+    build:
+      context: ..
+      dockerfile: app/Dockerfile
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql://admissions:local_only_change_me@db:5432/admissions
+      KNOWLEDGE_DIR: /app/knowledge
+    ports:
+      - "10000:10000"
+    depends_on:
+      - db
+volumes:
+  admissions_db:
+
+
